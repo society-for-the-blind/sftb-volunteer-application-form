@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>volunteer-application</title>
+    <!-- <script src="https://mrrio.github.io/jsPDF/dist/jspdf.debug.js"></script> -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/4.2.0/normalize.css" integrity="sha256-2LsTD4scfANF6HuZklR+5S4fjt7Bj0QHmybFZux6wtw=" crossorigin="anonymous" />
+    <style type="text/css" media="screen">
+      .hide {
+        display: none;
+      }
+      fieldset input[type="radio"]:checked + label + div {
+        display: block;
+      }
+
+      .empty,
+      .empty select,
+      .empty textarea {
+        color: red
+      }
+
+      .empty input::-webkit-input-placeholder {
+        color: red
+      }
+
+      .empty input::-moz-placeholder {
+        color: red
+      }
+
+      .empty input,
+      .empty textarea,
+      .empty select {
+        background: #E6CACA
+      }
+    </style>
+    <!-- on-the-fly quick validation before submit -->
+    <script type="text/javascript" charset="utf-8">
+      // this function could've been skipped using Element.closest() but
+      // but guess which browser does not support it (hint: IE)
+      function findParent(el,classOrTagName) {
+        // in case there is no element with such parent
+        if (!el) { return el};
+        if (el.classList.contains(classOrTagName)) {
+          return el;
+        } else {
+          return findParent(el.parentElement,classOrTagName);
+        }
+      }
+
+      // http://stackoverflow.com/questions/285522/find-html-label-associated-with-a-given-input
+      function getInputsWithLabels(el) {
+        return Array.prototype.slice.call(
+                 el.getElementsByTagName('LABEL')
+               ).
+               map(function(l) {
+                 var input = document.getElementById(l.htmlFor);
+                 input.label = l;
+                 return input
+               })
+      }
+
+      document.addEventListener("blur",function(e) {
+        var t = e.target;
+        var inputLine = findParent(t,'input-line');
+        var hidden = findParent(t,'hide') || t.parentElement.querySelector('.hide');
+        if (t.value) {
+          inputLine.classList.remove('empty');
+          t.parentElement.classList.remove('empty');
+          if (hidden) {
+            var c = hidden.getElementsByTagName('LABEL');
+            for (let i=0; i<c.length; i++) {
+              var hiddenInput = document.getElementById(c[i].htmlFor);
+              var hiddenInputDivClass = hiddenInput.parentElement.classList;
+              hiddenInput.value ? hiddenInputDivClass.remove('empty') : hiddenInputDivClass.add('empty');
+            }
+          };
+        } else { 
+          if (!inputLine.classList.contains('not-required')) {
+            if (inputLine.getElementsByTagName('label').length === 1) {
+              inputLine.classList.add('empty');
+            } else {
+              t.parentElement.classList.add('empty');
+            }
+          }
+        }
+        // useCapture has to be true because
+        // * event handler is defined on the top level object (document)
+        // * 'blur' does not bubble, so there is no other way to capture
+        //   fired events in lower levels
+        },true)
+    </script>
+    <!-- radio click hide toggle -->
+    <script type="text/javascript" charset="utf-8">
+      function addInputLine(tag) {
+        var inputDivs = document.getElementsByClassName([tag,"entry"].join("-"));
+        var sD = Array.prototype.slice.call(inputDivs).pop();
+        //sD.classList.add("input-line", "not-required");
+        var newElem = sD.cloneNode(true);
+
+        var input = newElem.querySelector('input');
+        var select= newElem.querySelector('select');
+
+        var curr = Number(input.id.split("-")[2]);
+        var newInputId = [tag, curr+1].join("-");
+        var newSelectId = [tag, "proficiency",curr+1].join("-");
+
+        input.value = "";
+        input.id = input.name = input.previousElementSibling.htmlFor = newInputId;
+
+        select.selectedIndex = 0;
+        select.id = select.name = select.previousElementSibling.htmlFor = newSelectId;
+
+        var inputButton = sD.nextElementSibling;
+        sD.parentNode.insertBefore(newElem,inputButton);
+        input.focus();
+      }
+    </script>
+    <!-- <script type="text/javascript" charset="utf-8"> -->
+    <!--   function process_form() { -->
+    <!--     function processInputLine(il) { -->
+    <!--       var inputs = getInputsWithLabels(il); -->
+
+    <!--       switch (il.dataset.type) { -->
+    <!--         case 'text': -->
+    <!--           inputs.forEach(function(i) { -->
+    <!--             if (i.value) { -->
+    <!--               //WHAT?! -->
+    <!--             } else { -->
+    <!--               var ilc = il.classList; -->
+    <!--               ilc.add('empty'); -->
+    <!--               if (ilc.contains('not-required')) { -->
+    <!--                 ilc.add('hide'); -->
+    <!--                 ilc.remove('empty'); -->
+    <!--               } -->
+    <!--             } -->
+    <!--           }); -->
+    <!--           break; -->
+    <!--         case 'radio': -->
+    <!--           var radios = il.querySelectorAll('input[type="radio"]'); -->
+    <!--           var checkedRadioIndex = Array.prototype.slice.call(radios). -->
+    <!--                                     findIndex(function(r) {return r.checked}); -->
+    <!--           if (checkedRadioIndex !== -1) { -->
+    <!--             il.classList.remove('empty'); -->
+    <!--             radios.forEach(function(r,i) { -->
+    <!--               if (i === checkedRadioIndex) { -->
+    <!--                 // WHAT?! -->
+    <!--               } else { -->
+    <!--                 var hidden = r.parentElement.querySelector('.hide'); -->
+    <!--                 if (hidden) { -->
+    <!--                   getInputsWithLabels(hidden). -->
+    <!--                     forEach(function(h) { -->
+    <!--                       h.parentElement.classList.remove('empty'); -->
+    <!--                     }) -->
+    <!--                 } -->
+    <!--               } -->
+    <!--             }) -->
+    <!--           } else { -->
+    <!--             il.classList.add('empty') -->
+    <!--           } -->
+    <!--           break; -->
+    <!--         case 'checkbox': -->
+    <!--           var checked = inputs.filter(function(i){return i.checked}); -->
+    <!--           if (checked.length) { -->
+    <!--             //WHAT?! -->
+    <!--           } else { -->
+    <!--             il.classList.add('empty'); -->
+    <!--           } -->
+    <!--           break; -->
+    <!--         case 'multi': // half-empty? it would justify the not-required condition below -->
+    <!--           var nonEmpty = inputs.filter(function(i) {return i.value}); -->
+    <!--           if (nonEmpty.length === inputs.length) { -->
+    <!--             //WHAT?! -->
+    <!--           } else { -->
+    <!--             // there's a twist here: -->
+    <!--             // If nothing is entered, the input-line gets marked as full-empty -->
+    <!--             // so that it is not removed by the not-required checking code below, -->
+    <!--             // otherwise the birthday section is gone at the check. -->
+    <!--             if (nonEmpty.length) { -->
+    <!--               inputs.forEach(function(i) { -->
+    <!--                 if (!i.value) { i.parentElement.classList.add('empty') } -->
+    <!--               }) -->
+    <!--             } else { -->
+    <!--               il.classList.add('full-empty'); -->
+    <!--             } -->
+    <!--           } -->
+    <!--           break; -->
+    <!--       } -->
+
+    <!--       // If not 'not-required' inputs are empty, they shouldn't even appear -->
+    <!--       // on the rendered form. Otherwise they will be process by the switch -->
+    <!--       // above anyway. -->
+    <!--       // The whole thing gets messy because of 'multi' inputs, -->
+    <!--       // but it works. -->
+    <!--       if (il.classList.contains('full-empty')) { -->
+    <!--         if (il.classList.contains('not-required')) { -->
+    <!--           il.parentElement.classList.add('hide'); -->
+    <!--         } else { -->
+    <!--           il.classList.remove('full-empty'); -->
+    <!--           il.classList.add('empty'); -->
+    <!--         } -->
+    <!--       } -->
+    <!--     } -->
+
+    <!--     var fieldsets = document.querySelectorAll('form > fieldset'); -->
+
+    <!--     for (let i=0; i<fieldsets.length; i++) { -->
+    <!--       var f = fieldsets[i]; -->
+    <!--       var inputLines = f.getElementsByClassName('input-line'); -->
+    <!--       Array.prototype.slice. -->
+    <!--         call(inputLines). -->
+    <!--         forEach(processInputLine) -->
+    <!--       if (f.getElementsByClassName('empty').length === 0) { f.classList.add('hide')} -->
+    <!--     } -->
+    <!--   } -->
+    <!-- </script> -->
+  </head>
+  <body>
+    <h1>Volunteer Application</h1>
+    <form autocomplete="off">
+      <!-- <p><strong>Required fields are followed by <abbr title="required">*</abbr>.</strong></p> -->
+      <fieldset>
+        <legend>Personal Information</legend>
+        <div class="input-line names" data-type="text">
+          <label for="vol-first-name">
+            <span>First Name</span>
+            <!-- <strong><abbr title="required">*</abbr></strong> -->
+          </label>
+          <input type="text" name="first-name" id="vol-first-name" placeholder="First Name"/>
+        </div>
+        <div class="input-line names" data-type="text">
+          <label for="vol-last-name">
+            <span>Last Name</span>
+            <!-- <strong><abbr title="required">*</abbr></strong> -->
+          </label>
+          <input type="text" name="last-name" id="vol-last-name"  placeholder="Last Name"/>
+        </div>
+        <fieldset>
+          <legend>
+            <span>Date of Birth</span>
+            <!-- <strong><abbr title="required">*</abbr></strong> -->
+          </legend>
+          <div class="input-line" data-type="multi">
+            <span>
+              <label for="vol-dob-month" class="hide">Month</label>
+              <select name="vol-dob-month" class="dob-inputs" id="vol-dob-month">
+                <option value="">Month</option>
+                <option value="January">January</option>
+                <option value="February">February</option>
+                <option value="March">March</option>
+                <option value="April">April</option>
+                <option value="May">May</option>
+                <option value="June">June</option>
+                <option value="July">July</option>
+                <option value="August">August</option>
+                <option value="September">September</option>
+                <option value="October">October</option>
+                <option value="November">November</option>
+                <option value="December">December</option>
+              </select>
+            </span>
+            <span>
+              <label for="vol-dob-day" class="hide">Day</label>
+              <input type="text" name="vol-dob-day" class="dob-inputs" id="vol-dob-day" pattern="\d{1}|\d{2}" maxlength="2" size="2" placeholder="Day"/>
+            </span>
+            <span>
+              <label for="vol-dob-year" class="hide">Year</label>
+              <input type="text" name="vol-dob-year" class="dob-inputs" id="vol-dob-year" pattern="\d{4}" maxlength="4" size="4" placeholder="Year"/>
+            </span>
+          </div>
+        </fieldset>
+        <div class="input-line" data-type="text">
+          <label for="vol-address">
+            <span>Address</span>
+            <!-- <strong><abbr title="required">*</abbr></strong> -->
+          </label>
+          <input type="text" name="address" id="vol-address"/>
+        </div>
+        <div class="input-line" data-type="text">
+          <label for="vol-city">
+            <span>City</span>
+            <!-- <strong><abbr title="required">*</abbr></strong> -->
+          </label>
+          <input type="text" name="city" id="vol-city"/>
+        </div>
+        <div class="input-line" data-type="text">
+          <label for="vol-state">
+            <span>State</span>
+            <!-- <strong><abbr title="required">*</abbr></strong> -->
+          </label>
+          <input type="text" name="state" id="vol-state"/>
+        </div>
+        <div class="input-line" data-type="text">
+          <label for="vol-zip">
+            <span>ZIP code</span>
+            <!-- <strong><abbr title="required">*</abbr></strong> -->
+          </label>
+          <input type="text" name="zip" id="vol-zip" pattern="[0-9](5)" maxlength="5" size="5"/>
+        </div>
+        <div class="input-line" data-type="text">
+          <label for="vol-tel">
+            <span>Phone</span>
+            <!-- <strong><abbr title="required">*</abbr></strong> -->
+          </label>
+          <input type="tel" name="phone-number" id="vol-tel"/>
+        </div>
+        <div class="input-line not-required" data-type="text">
+          <label for="vol-email">
+            <span>E-mail</span>
+          </label>
+          <input type="email" name="email" id="vol-email" multiple />
+        </div>
+        <fieldset>
+          <legend>Gender</legend>
+          <div class="input-line" data-type="radio">
+            <div>
+              <input type="radio" name="gender" id="vol-gender-male" value="male" />
+              <label for="vol-gender-male">Male</label>
+            </div>
+            <div>
+              <input type="radio" name="gender" id="vol-gender-female" value="female" />
+              <label for="vol-gender-female">Female</label>
+            </div>
+            <div>
+              <input type="radio" name="gender" id="vol-gender-other" value="other" />
+              <label for="vol-gender-other">Other</label>
+            </div>
+          </div>
+        </fieldset>
+        <fieldset>
+          <legend>Physical limitations</legend>
+          <div class="input-line" data-type="radio">
+            <div>
+              <input type="radio" name="limit" id="vol-limit-yes" value="yes" />
+              <label for="vol-limit-yes">Yes</label>
+              <div class="hide">
+                <div>
+                  <label for="vol-limit-explain">Please explain</label>
+                  <textarea name="vol-limit-explain" id="vol-limit-explain"></textarea>
+                </div>
+              </div>
+            </div>
+            <div>
+              <input type="radio" name="limit" id="vol-limit-no" value="no" />
+              <label for="vol-limit-no">No</label>
+            </div>
+          </div>
+        </fieldset>
+      </fieldset>
+      <fieldset>
+        <legend>Emergency Contact</legend>
+        <div class="input-line names" data-type="text">
+          <label for="vol-emergency-first-name">
+            <span>First Name</span>
+            <!-- <strong><abbr title="required">*</abbr></strong> -->
+          </label>
+          <input type="text" name="first-name" id="vol-emergency-first-name" placeholder="First Name"/>
+        </div>
+        <div class="input-line names" data-type="text">
+          <label for="vol-emergency-last-name">
+            <span>Last Name</span>
+            <!-- <strong><abbr title="required">*</abbr></strong> -->
+          </label>
+          <input type="text" name="last-name" id="vol-emergency-last-name" placeholder="Last Name"/>
+        </div>
+        <div class="input-line" data-type="text">
+          <label for="vol-emergency-address">
+            <span>Address</span>
+            <!-- <strong><abbr title="required">*</abbr></strong> -->
+          </label>
+          <input type="text" name="address" id="vol-emergency-address"/>
+        </div>
+        <div class="input-line" data-type="text">
+          <label for="vol-emergency-city">
+            <span>City</span>
+            <!-- <strong><abbr title="required">*</abbr></strong> -->
+          </label>
+          <input type="text" name="city" id="vol-emergency-city"/>
+        </div>
+        <div class="input-line" data-type="text">
+          <label for="vol-emergency-state">
+            <span>State</span>
+            <!-- <strong><abbr title="required">*</abbr></strong> -->
+          </label>
+          <input type="text" name="state" id="vol-emergency-state"/>
+        </div>
+        <div class="input-line" data-type="text">
+          <label for="vol-emergency-zip">
+            <span>ZIP code</span>
+            <!-- <strong><abbr title="required">*</abbr></strong> -->
+          </label>
+          <input type="text" name="zip" id="vol-emergency-zip" pattern="[0-9](5)" maxlength="5" size="5"/>
+        </div>
+        <div class="input-line" data-type="text">
+          <label for="vol-emergency-tel">
+            <span>Phone</span>
+            <!-- <strong><abbr title="required">*</abbr></strong> -->
+          </label>
+          <input type="tel" name="phone-number" id="vol-emergency-tel"/>
+        </div>
+        <div class="input-line not-required" data-type="text">
+          <label for="vol-emergency-email">
+            <span>E-mail</span>
+          </label>
+          <input type="email" name="email" id="vol-emergency-email" multiple />
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend>Employment information</legend>
+        <p>Are you currently employed?</p>
+        <div class="input-line" data-type="radio">
+          <div>
+            <input type="radio" name="vol-employed" id="vol-employed-no" value="no" />
+            <label for="vol-employed-no">No</label>
+          </div>
+          <div>
+            <input type="radio" name="vol-employed" id="vol-employed-yes" value="yes" />
+            <label for="vol-employed-yes">Yes</label>
+            <div class="hide">
+              <div>
+                <label for="vol-occupation">Occupation</label>
+                <input type="text" name="vol-occupation" id="vol-occupation" />
+              </div>
+              <div>
+                <label for="vol-employer">Most recent employer</label>
+                <input type="text" name="vol-employer" id="vol-employer" />
+              </div>
+              <div>
+                <label for="vol-hours-donation">Does your employer offer a volunteer match?</label>
+                <select name="vol-hours-donation" id="vol-hours-donation">
+                  <p>css hide</p>
+                  <option value=""></option>
+                  <option value="yes">yes</option>
+                  <option value="no">no</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div>
+            <input type="radio" name="vol-employed" id="vol-employed-retired" value="retired" />
+            <label for="vol-employed-retired">Retired</label>
+            <div class="hide">
+              <div>
+                <label for="vol-retired-from">Where did you retire from?</label>
+                <input type="text" name="vol-retired-from" id="vol-retired-from" />
+              </div>
+            </div>
+          </div>
+          <div>
+            <input type="radio" name="vol-employed" id="vol-employed-other" value="other" />
+            <label for="vol-employed-other">Other</label>
+            <div class="hide">
+              <div>
+                <label for="vol-employed-other-explain">Please elaborate:</label>
+                <input type="text" name="vol-employed-other-explain" id="vol-employed-other-explain" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </fieldset>
+      <fieldset> <!-- because none of the inputs are required -->
+        <legend>Skills and previous volunteer experience</legend>
+        <div class="input-line not-required" data-type="text">
+          <label for="vol-experience">List previous volunteer experience(s)</label>
+          <textarea name="experience" id="vol-experience"></textarea>
+        </div>
+        <fieldset>
+          <legend>Skills</legend>
+          <div class="vol-skill-entry input-line not-required" data-type="multi">
+            <span>
+              <label for="vol-skill-1" class="hide">Skill name</label>
+              <input type="text" name="vol-skill-1" id="vol-skill-1" />
+            </span>
+            <span>
+              <label for="vol-skill-proficiency-1" class="hide">Skill proficiency</label>
+              <select name="vol-skill-proficiency-1" id="vol-skill-proficiency-1">
+                <option value="">skill level</option>
+                <option value="skilled">Skilled</option>
+                <option value="can-teach">Can teach</option>
+                <option value="amateur">Amateur</option>
+              </select>
+            </span>
+          </div>
+          <input type="button" name="add-skill-button" id="add-skill-button" value="Add skill" onclick="addInputLine('vol-skill')" />
+        </fieldset>
+        <fieldset>
+          <legend>Languages</legend>
+          <div class="vol-lang-entry input-line not-required" data-type="multi">
+            <span>
+              <label for="vol-lang-1" class="hide">Skill name</label>
+              <input type="text" name="vol-lang-1" id="vol-lang-1" />
+            </span>
+            <span>
+              <label for="vol-lang-proficiency-1" class="hide">Skill name</label>
+              <select name="vol-lang-proficiency-1" id="vol-lang-proficiency-1">
+                <option value="">proficiency</option>
+                <option value="fluent">Fluent</option>
+                <option value="read">Read</option>
+                <option value="write">Write</option>
+              </select>
+            </span>
+          </div>
+          <input type="button" name="add-lang-button" id="add-lang-button" value="Add language" onclick="addInputLine('vol-lang')" />
+        </fieldset>
+      </fieldset>
+      <fieldset>
+        <legend>Availability</legend>
+        <div class="input-line" data-type="text">
+          <label for="vol-nr-days">Number of days per week:</label>
+          <select name="nr-days" id="vol-nr-days">
+            <option value=""></option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+          </select>
+        </div>
+        <div class="input-line" data-type="text">
+          <label for="vol-per-week">Hours per week:</label>
+          <input type="text" name="per-week" id="vol-per-week" />
+        </div>
+        <fieldset>
+          <legend>Preferred days</legend>
+          <div class="input-line" data-type="checkbox">
+            <div>
+              <input type="checkbox" name="mon" id="vol-pref-mon" value="Monday"/>
+              <label for="vol-pref-mon">Monday</label>
+            </div>
+            <div>
+              <input type="checkbox" name="tue" id="vol-pref-tue" value="Tuesday"/>
+              <label for="vol-pref-tue">Tuesday</label>
+            </div>
+            <div>
+              <input type="checkbox" name="wed" id="vol-pref-wed" value="Wednesday"/>
+              <label for="vol-pref-wed">Wednesday</label>
+            </div>
+            <div>
+              <input type="checkbox" name="thu" id="vol-pref-thu" value="Thursday"/>
+              <label for="vol-pref-thu">Thursday</label>
+            </div>
+            <div>
+              <input type="checkbox" name="fri" id="vol-pref-fri" value="Friday"/>
+              <label for="vol-pref-fri">Friday</label>
+            </div>
+            <div>
+              <input type="checkbox" name="sat" id="vol-pref-sat" value="Saturday"/>
+              <label for="vol-pref-sat">Saturday</label>
+            </div>
+            <div>
+              <input type="checkbox" name="sun" id="vol-pref-sun" value="Sunday"/>
+              <label for="vol-pref-sun">Sunday</label>
+            </div>
+          </div>
+        </fieldset>
+      </fieldset>
+      <fieldset>
+        <legend>Programs of interest</legend>
+        <p>Please select all that apply:</p>
+        <div class="input-line" data-type="checkbox">
+          <div>
+            <input type="checkbox" name="prog-one" id="vol-prog-one" value="One day events"/>
+            <label for="vol-prog-one">One day events</label>
+          </div>
+          <div>
+            <input type="checkbox" name="prog-access" id="vol-prog-access" value="Access News"/>
+            <label for="vol-prog-access">Access News</label>
+          </div>
+          <div>
+            <input type="checkbox" name="prog-office" id="vol-prog-office" value="Office work"/>
+            <label for="vol-prog-office">Office work</label>
+          </div>
+          <div>
+            <input type="checkbox" name="prog-store" id="vol-prog-store" value="Store"/>
+            <label for="vol-prog-store">Store</label>
+          </div>
+          <div>
+            <input type="checkbox" name="prog-outreach" id="vol-prog-outreach" value="Outreach"/>
+            <label for="vol-prog-outreach">Outreach</label>
+          </div>
+          <div>
+            <input type="checkbox" name="prog-data-entry" id="vol-prog-data-entry" value="Data entry"/>
+            <label for="vol-prog-data-entry">Data entry</label>
+          </div>
+          <div>
+            <input type="checkbox" name="prog-bingo" id="vol-prog-bingo" value="Bingo"/>
+            <label for="vol-prog-bingo">Bingo</label>
+          </div>
+          <div>
+            <input type="checkbox" name="prog-reader" id="vol-prog-reader" value="Personal reader"/>
+            <label for="vol-prog-reader">Personal reader</label>
+          </div>
+          <div>
+            <input type="checkbox" name="prog-agency" id="vol-prog-agency" value="Agency"/>
+            <label for="vol-prog-agency">Agency</label>
+          </div>
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend>
+          <span>Miscellaneous</span>
+        </legend>
+        <div class="not-required input-line" data-type="text">
+          <label for="vol-transport">How will you get to your assignment?</label>
+          <select name="vol-transport" id="vol-transport">
+            <option value=""></option>
+            <option value="public transportation">public transportation</option>
+            <option value="walk">walk</option>
+            <option value="car">car</option>
+            <option value="svc">svc</option>
+            <option value="taxi/cab">taxi/cab</option>
+          </select>
+        </div>
+        <div class="input-line" data-type="text">
+          <label for="vol-how">How did you hear about us?</label>
+          <textarea name="how" id="vol-how"></textarea>
+        </div>
+      </fieldset>
+      <!-- agreements -->
+      <fieldset>
+        <legend>Participant Photo Release Agreement</legend>
+        <div class="collapse">
+          <p>A major objective of Society for the Blind is to educate the public about blindness. To accomplish this, Society for the Blind may use photographs, videotape and digital recordings for any and all media. It is the right of the individual whether or not to consent to the use of his/her likeness and/or identity for the purpose of education and/or publicity.</p>
+          <ul>
+            <li>I hereby authorize Society for the Blind to use any photographs, videotape and/or digital recordings of me or my property taken at Society for the Blind and/or during any activities associated with Society for the Blind.</li>
+            <li>I waive any rights, claims, or interest I may have to control the use of my identity or likeness in whatever media used.</li>
+            <li>I understand that there will be no financial or other remuneration for either initial or subsequent uses of photographs, videotapes or digital recordings of myself or my property.</li>
+          </ul>
+        </div>
+        <div class="input-line" data-type="radio">
+          <div>
+            <input type="radio" name="vol-photo" id="vol-photo-accept" value="accept"/>
+            <label for="vol-photo-accept"><strong>I agree that my name may be associated as a caption with the image(s) created.</strong></label>
+          </div>
+          <div>
+            <input type="radio" name="vol-photo" id="vol-photo-decline" value="decline"/>
+            <label for="vol-photo-decline"><strong>I request that my name not be associated with any image(s) created.</strong></label>
+          </div>
+        </div>
+    </fieldset>
+      <fieldset>
+        <legend>
+          <span>Confidentiality Agreement</span>
+          <!-- <strong>Required</strong> -->
+        </legend>
+        <div class="collapse">
+          <p>It is the policy of Society for the Blind that all staff and volunteers maintain the highest standards of confidentiality possible. In order to foster the confidence of our clients regarding the security and privacy of all information contained in their personal records that may be handled or read, it is essential that all personal records are secure from unauthorized use. Protected information includes, but is not limited to: the personal chart mail or correspondence billing and account information and other identifiable client information such as demographic information.</p>
+          <p>It is your responsibility as an employee or volunteer at Society for the Blind to never discuss a client with a third party, to never reveal any client information to unauthorized individuals, nor allow an unauthorized person access to any personal chart or computer system that contains client information. In addition, disclosures to authorized persons must be limited to the minimum amount of information necessary to complete the task. That is, information should never be shared unless there is a legitimate need to know the information, even among other staff with whom you work. While it may be necessary to have a conversation about a client with a fellow employee, these conversations must be out of range of other clients or visitors, must not include other staff unnecessarily, and you must not discuss clients during off-duty hours.</p>
+          <p>All protected health information is considered confidential and may not be released unless in compliance with Society for the Blind policies and procedures on the disclosure (release) of client information.</p>
+          <p>All donor, financial and personnel records of the Agency are considered confidential unless released by the authority of the Executive Director, an officer of the Board of Directors, or at the direction of Court, law enforcement or a government agency.</p>
+          <p>Client confidentiality does not extend to the point at which a client is a danger to himself, others, or is gravely disabled. Client confidentiality also does not cover instances of suspected abuse. Staff will report all such instances to the Executive Director and proper authorities (such as adult protective services or child protective services) as soon as possible. Furthermore staff will also inform potential victims of threatened action.</p>
+          <p>All staff and volunteers working directly with clients will be required to sign a statement of confidentiality before they begin work at Society for the Blind.</p>
+          <p>Society for the Blind imposes the following sanctions if the confidentiality of information is not adhered to:</p>
+          <ul>
+            <li>Breaches of confidentiality will be considered grounds for immediate dismissal from employment or volunteer placement.</li>
+            <li>State of California and the <a href="https://www.hhs.gov/hipaa/for-professionals/privacy/">HIPAA Privacy Rule</a> may subject an individual to civil penalties, criminal penalties, and monetary penalties.</li>
+            <li>There will be no sanctions against a “whistle blower” or workforce member who discloses confidential information because they believe Society for the Blind has engaged in unlawful conduct or has violated professional or clinical standards, as long as the disclosure is made by the employee to a health oversight agency, public health authority or accreditation organization authorized to investigate such allegations or to an attorney.</li>
+          </ul>
+        </div>
+        <div class="input-line" data-type="checkbox">
+          <input type="checkbox" name="vol-confidential" id="vol-confidential"/>
+          <label for="vol-confidential"><strong>I have read, understand, and agree to the terms and conditions set forth in this Confidentiality Agreement.</strong></label>
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend>
+          <span>Volunteer Waiver, Release and Indemnity Agreement</span>
+          <!-- <strong>Required</strong> -->
+        </legend>
+        <div class="collapse">
+          <p>This document sets forth the responsibilities and understandings of the volunteer and of Society for the Blind regarding volunteer’s participation in volunteer programs partially or wholly coordinated by Society for the Blind.</p>
+          <p>The volunteer and Society for the Blind agree as follows:</p>
+          <ol>
+            <li>Volunteers hereby agree to serve any client who is assigned regardless of race, sex, creed or national origin.</li>
+            <li>The volunteer performs the service of the volunteer’s own free will, without promise, expectation, or receipt of remuneration. The volunteer is not an employee or agent of Society for the Blind for any purpose and the volunteer’s services are not controlled nor mandated by Society for the Blind.</li>
+            <li>If the volunteer is under the age of 18, the volunteer may only participate in volunteer service with the express written consent of the volunteer’s parent or guardian.</li>
+            <li>The volunteer understands and agrees that it is possible that the volunteer may be injured or otherwise harmed during volunteer service due to accidents, acts of nature, the volunteer’s negligent or intentional acts, or the negligent or intentional acts of others; that while Society for the Blind has taken some steps to reduce the chances of injuries or harm to the volunteer, that Society for the Blind has no control over most risks, and, thus, cannot and does not guarantee nor take any responsibility for the safety of the volunteer or the volunteer’s property while the volunteer is engaged in volunteer service; and that the volunteer must take full responsibility for himself or herself and assume the risk of harm or damage while serving by taking all necessary and reasonable precautions and acting in a manner that will help protect himself or herself and his or her property.</li>
+            <li>The volunteer agrees to waive and release Society for the Blind from any and all potential claims for injury, illness, damage, or death which the volunteer may have against Society for the Blind that might arise out of the volunteer’s service and to hold Society for the Blind harmless there from.</li>
+            <li>The volunteer agrees and understands that injuries or losses to others, such as co-workers or the person(s) being helped, may occur as a result of the volunteer’s negligent or intentional acts during volunteer service, and that to avoid such harm, the volunteer must exercise care and act responsibly in serving others.</li>
+            <li>If any injury or loss to another does occur due to the volunteer’s intentional actions or due to volunteer’s negligent actions arising outside of the scope of the volunteer’s activities, the volunteer must accept the liability for and repair, or make reparations for, the harm done.</li>
+            <li>Society for the Blind is not providing the volunteer with insurance coverage for any injuries, conditions, or losses to the volunteer arising out of volunteer activities, except that Society for the Blind does provide liability insurance coverage on all Society for the Blind vehicles used during service projects.</li>
+            <li>The volunteer must maintain his or her own primary medical insurance and the volunteer’s own automobile liability insurance when driving a non-Society for the Blind vehicle to cover potential medical and other costs related to the volunteer service; and the volunteer is also encourages to maintain property and life insurance coverage while serving as a volunteer.</li>
+            <li>All costs for injury or loss above the coverage provided by the volunteer’s insurance are the volunteer’s personal responsibility.</li>
+            <li>In projects where the volunteer will be transporting others in a non-Society for the Blind organization owned vehicle, the volunteer may be required to provide proof of automobile insurance in order to participate.</li>
+            <li>Since volunteers are not Society for the Blind employees, Society for the Blind does not provide worker’s compensation coverage for injuries or illnesses to the volunteer arising out of volunteer activities.</li>
+            <li>Society for the Blind will provide you with a legal defense, upon your request, in response to any claim or action brought against you, arising out of your volunteer service in a program that Society for the Blind helps coordinate, where you were acting in good faith and reasonably believed you were acting within the scope of the volunteer activity, and the act in question was not an intentional or knowing act constituting illegal, willful, or wanton misconduct. However, Society for the Blind will not defend you in any case where the injury resulted from your operations of a non- Society for the Blind motor vehicle, vessel, aircraft, or other vehicle for which a pilot or operator’s license is required or where the suite is brought by an authorized governmental officer to enforce a federal, state, or local law.</li>
+            <li>In legal actions in which Society for the Blind provides your defense, Society for the Blind will pay for reasonable attorney fees, judgments, settlements, or other expenses directly related to your defense only up to the limits presently stated in the appropriate State statutes, one time only per volunteer.  Society for the Blind will control the defense and you must reasonably cooperate and comply with Society for the Blind decisions and procedures.</li>
+          </ol>
+        </div>
+        <div class="input-line" data-type="checkbox">
+          <input type="checkbox" name="vol-waiver" id="vol-waiver"/>
+          <label for="vol-waiver"><strong>I confirm that I have read, understand, and consent to the terms of this agreement.</strong></label>
+        </div>
+      </fieldset>
+      <!-- signature page material -->
+      <div id="signature" class="hide">
+        Volunteer
+        Date
+        Society for the Blind Representative
+        Date
+        If volunteer is under 18 years of age, parent or guardian must read and sign the following: This release, its significance, and assumption of risk have been explained to and are understood by the minor.
+        I, being the parent or guardian of the above named minor, hereby consent to and join in the foregoing release and consent on behalf of named minor.
+        Date
+        Parent or Guardian Signature
+      </div>
+      <input type="button" id="submitButton" value="submit" onclick="process_form()" />
+    </form>
+  </body>
+</html>
