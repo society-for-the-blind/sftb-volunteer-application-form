@@ -23,6 +23,15 @@
         left: 130px;
       }
 
+      #comment {
+        font-size: small;
+      }
+
+      textarea {
+          height: 12em;
+          width: 20em;
+      }
+
       abbr[title="required"] {
         text-decoration: none;
         color: red;
@@ -114,7 +123,8 @@
         display: none;
       }
 
-      fieldset input[type="radio"]:checked + label + div {
+      fieldset input[type="radio"]:checked + label + div,
+      fieldset input[type="checkbox"]:checked + label + div {
         display: block;
       }
 
@@ -141,6 +151,11 @@
       li, p {
           text-align: justify;
           line-height: 20px;
+      }
+
+      legend > p {
+        font-size: initial;
+        font-weight: normal;
       }
 
       p {
@@ -354,9 +369,7 @@
         }
       }
 
-      window.onload = function() {
-        document.getElementById('vol-first-name').focus();
-      };
+      // window.onload = function() { document.getElementById('vol-first-name').focus(); };
     </script>
   </head>
   <body>
@@ -365,6 +378,19 @@
       <h1>Volunteer Application</h1>
       <form autocomplete="off">
         <p><strong>Required fields are marked by <abbr title="required">*</abbr>.</strong></p>
+        <fieldset>
+          <legend><p><abbr title="required">*</abbr>Please note, a majority of Society For The Blind's volunteer opportunities are available at our agency, located in Sacramento, and/or at locations in the surrounding area. Are you able to volunteer in the Sacramento area?</p></legend>
+          <div class="input-line" data-type="radio">
+            <div>
+              <input type="radio" name="local" id="vol-local-yes" value="yes" />
+              <label for="vol-local-yes">Yes</label>
+            </div>
+            <div>
+              <input type="radio" name="local" id="vol-local-no" value="no" />
+              <label for="vol-local-no">No</label>
+            </div>
+          </div>
+        </fieldset>
         <fieldset>
           <legend>Personal Information</legend>
           <div class="input-line names hide-label" data-type="text">
@@ -640,6 +666,10 @@
         </fieldset>
         <fieldset> <!-- because none of the inputs are required -->
           <legend>Skills and volunteer experience</legend>
+          <div class="input-line" data-type="text">
+            <label for="vol-reason"><abbr title="required">*</abbr>Why would you like to volunteer to Society For The Blind?</label>
+            <textarea name="reason" id="vol-reason"></textarea>
+          </div>
           <div class="input-line not-required" data-type="text">
             <label for="vol-experience">List previous volunteer experience(s)</label>
             <textarea name="experience" id="vol-experience"></textarea>
@@ -702,6 +732,7 @@
           </div>
           <fieldset>
             <legend><abbr title="required">*</abbr>Preferred days</legend>
+            <p id="comment">Please note, the Personal Reader opportunity is only available during our business hours of Monday - Friday, 8am - 5pm.</p>
             <div class="input-line" data-type="checkbox">
               <div>
                 <input type="checkbox" name="mon" id="vol-pref-mon" value="Monday"/>
@@ -739,28 +770,8 @@
           <p><abbr title="required">*</abbr>Please select all that apply:</p>
           <div class="input-line" data-type="checkbox">
             <div>
-              <input type="checkbox" name="prog-one" id="vol-prog-one" value="One day events"/>
-              <label for="vol-prog-one">One day events</label>
-            </div>
-            <div>
               <input type="checkbox" name="prog-access" id="vol-prog-access" value="Access News"/>
               <label for="vol-prog-access">Access News</label>
-            </div>
-            <div>
-              <input type="checkbox" name="prog-office" id="vol-prog-office" value="Office work"/>
-              <label for="vol-prog-office">Office work</label>
-            </div>
-            <div>
-              <input type="checkbox" name="prog-store" id="vol-prog-store" value="Store"/>
-              <label for="vol-prog-store">Store</label>
-            </div>
-            <div>
-              <input type="checkbox" name="prog-outreach" id="vol-prog-outreach" value="Outreach"/>
-              <label for="vol-prog-outreach">Outreach</label>
-            </div>
-            <div>
-              <input type="checkbox" name="prog-data-entry" id="vol-prog-data-entry" value="Data entry"/>
-              <label for="vol-prog-data-entry">Data entry</label>
             </div>
             <div>
               <input type="checkbox" name="prog-bingo" id="vol-prog-bingo" value="Bingo"/>
@@ -768,11 +779,29 @@
             </div>
             <div>
               <input type="checkbox" name="prog-reader" id="vol-prog-reader" value="Personal reader"/>
-              <label for="vol-prog-reader">Personal reader</label>
+              <label for="vol-prog-reader">Personal Reader at the Agency</label>
             </div>
             <div>
-              <input type="checkbox" name="prog-agency" id="vol-prog-agency" value="Agency"/>
-              <label for="vol-prog-agency">Agency</label>
+              <input type="checkbox" name="special-events" id="vol-prog-special-events" value="On Call for Special Events"/>
+              <label for="vol-prog-special-events">On Call for Special Events</label>
+            </div>
+            <div>
+              <input type="checkbox" name="admin" id="vol-prog-admin" value="On Call for Program/Admin Support"/>
+              <label for="vol-prog-admin">On Call for Program/Admin Support</label>
+            </div>
+            <div>
+              <input type="checkbox" name="prog-group" id="vol-prog-group" value="Group Opportunity"/>
+              <label for="vol-prog-group">Group Opportunity</label>
+            </div>
+            <div>
+              <input type="checkbox" name="prog-other" id="vol-prog-other" value="Other"/>
+              <label for="vol-prog-other">Other</label>
+              <div class="hide">
+                <div>
+                  <label for="vol-prog-other-explain">Please explain</label>
+                  <textarea name="vol-prog-other-explain" id="vol-allergies-explain"></textarea>
+                </div>
+              </div>
             </div>
           </div>
         </fieldset>
@@ -790,6 +819,10 @@
               <option value="svc">svc</option>
               <option value="taxi/cab">taxi/cab</option>
             </select>
+          </div>
+          <div class="input-line not-required" data-type="text">
+            <label for="vol-community">Do you belong to any clubs, service organizations, etc?</label>
+            <textarea name="community" id="vol-community"></textarea>
           </div>
           <div class="input-line" data-type="text">
             <label for="vol-how"><abbr title="required">*</abbr>How did you hear about us?</label>
