@@ -23,6 +23,22 @@
         left: 130px;
       }
 
+      abbr[title="required"] {
+        text-decoration: none;
+        color: red;
+        font-weight: bold;
+      }
+
+      legend > abbr,
+      p > abbr,
+      label > abbr {
+        padding-right: 5px
+      }
+
+      .not-required.hide-label {
+        padding-left: 11px;
+      }
+
       .names {
           display: inline-block;
       }
@@ -348,13 +364,13 @@
       <a href="http://societyfortheblind.org/"><img src="sftb-logo.png" width="250px" alt="Society For The Blind logo"></a>
       <h1>Volunteer Application</h1>
       <form autocomplete="off">
-        <!-- <p><strong>Required fields are followed by <abbr title="required">*</abbr>.</strong></p> -->
+        <p><strong>Required fields are marked by <abbr title="required">*</abbr>.</strong></p>
         <fieldset>
           <legend>Personal Information</legend>
           <div class="input-line names hide-label" data-type="text">
+            <abbr title="required">*</abbr>
             <label for="vol-first-name">
               <span>First Name</span>
-              <!-- <strong><abbr title="required">*</abbr></strong> -->
             </label>
             <input type="text" name="first-name" id="vol-first-name" placeholder="First Name"/>
           </div>
@@ -366,6 +382,7 @@
             <input type="text" name="last-name" id="vol-last-name"  placeholder="Last Name"/>
           </div>
           <div class="input-line hide-label" data-type="text">
+            <abbr title="required">*</abbr>
             <label for="vol-tel">
               <span>Phone</span>
               <!-- <strong><abbr title="required">*</abbr></strong> -->
@@ -384,6 +401,7 @@
               <!-- <strong><abbr title="required">*</abbr></strong> -->
             </legend>
             <div class="input-line hide-label" data-type="multi">
+              <abbr title="required">*</abbr>
               <span>
                 <label for="vol-dob-month">Month</label>
                 <select name="vol-dob-month" class="dob-inputs" id="vol-dob-month">
@@ -415,6 +433,7 @@
           <fieldset>
             <legend>Address</legend>
             <div class="input-line hide-label" data-type="text">
+              <abbr title="required">*</abbr>
               <label for="vol-address">
                 <span>Address</span>
                 <!-- <strong><abbr title="required">*</abbr></strong> -->
@@ -422,6 +441,7 @@
               <input type="text" name="address" id="vol-address" placeholder="Address"/>
             </div>
             <div class="input-line hide-label" data-type="text">
+              <abbr title="required">*</abbr>
               <label for="vol-city">
                 <span>City</span>
                 <!-- <strong><abbr title="required">*</abbr></strong> -->
@@ -429,6 +449,7 @@
               <input type="text" name="city" id="vol-city" placeholder="City"/>
             </div>
             <div class="input-line hide-label" data-type="text">
+              <abbr title="required">*</abbr>
               <label for="vol-state">
                 <span>State</span>
                 <!-- <strong><abbr title="required">*</abbr></strong> -->
@@ -436,6 +457,7 @@
               <input type="text" name="state" id="vol-state" placeholder="State"/>
             </div>
             <div class="input-line hide-label" data-type="text">
+              <abbr title="required">*</abbr>
               <label for="vol-zip">
                 <span>ZIP code</span>
                 <!-- <strong><abbr title="required">*</abbr></strong> -->
@@ -444,7 +466,7 @@
             </div>
           </fieldset>
           <fieldset>
-            <legend>Gender</legend>
+            <legend><abbr title="required">*</abbr>Gender</legend>
             <div class="input-line" data-type="radio">
               <div>
                 <input type="radio" name="gender" id="vol-gender-male" value="male" />
@@ -461,7 +483,7 @@
             </div>
           </fieldset>
           <fieldset>
-            <legend>Physical limitations</legend>
+            <legend><abbr title="required">*</abbr>Physical limitations</legend>
             <div class="input-line" data-type="radio">
               <div>
                 <input type="radio" name="limit" id="vol-limit-yes" value="yes" />
@@ -480,7 +502,7 @@
             </div>
           </fieldset>
           <fieldset>
-            <legend>Allergies</legend>
+            <legend><abbr title="required">*</abbr>Allergies</legend>
             <div class="input-line" data-type="radio">
               <div>
                 <input type="radio" name="allergies" id="vol-allergies-yes" value="yes" />
@@ -502,6 +524,7 @@
         <fieldset>
           <legend>Emergency Contact</legend>
           <div class="input-line names hide-label" data-type="text">
+            <abbr title="required">*</abbr>
             <label for="vol-emergency-first-name">
               <span>First Name</span>
               <!-- <strong><abbr title="required">*</abbr></strong> -->
@@ -516,6 +539,7 @@
             <input type="text" name="last-name" id="vol-emergency-last-name" placeholder="Last Name"/>
           </div>
           <div class="input-line hide-label" data-type="text">
+            <abbr title="required">*</abbr>
             <label for="vol-emergency-address">
               <span>Address</span>
               <!-- <strong><abbr title="required">*</abbr></strong> -->
@@ -523,6 +547,7 @@
             <input type="text" name="address" id="vol-emergency-address" placeholder="Address"/>
           </div>
           <div class="input-line hide-label" data-type="text">
+            <abbr title="required">*</abbr>
             <label for="vol-emergency-city">
               <span>City</span>
               <!-- <strong><abbr title="required">*</abbr></strong> -->
@@ -530,6 +555,7 @@
             <input type="text" name="city" id="vol-emergency-city" placeholder="City"/>
           </div>
           <div class="input-line hide-label" data-type="text">
+            <abbr title="required">*</abbr>
             <label for="vol-emergency-state">
               <span>State</span>
               <!-- <strong><abbr title="required">*</abbr></strong> -->
@@ -537,6 +563,7 @@
             <input type="text" name="state" id="vol-emergency-state" placeholder="State"/>
           </div>
           <div class="input-line hide-label" data-type="text">
+            <abbr title="required">*</abbr>
             <label for="vol-emergency-zip">
               <span>ZIP code</span>
               <!-- <strong><abbr title="required">*</abbr></strong> -->
@@ -544,6 +571,7 @@
             <input type="text" name="zip" id="vol-emergency-zip" pattern="[0-9](5)" maxlength="5" size="5" placeholder="ZIP"/>
           </div>
           <div class="input-line hide-label" data-type="text">
+            <abbr title="required">*</abbr>
             <label for="vol-emergency-tel">
               <span>Phone</span>
               <!-- <strong><abbr title="required">*</abbr></strong> -->
@@ -559,7 +587,7 @@
         </fieldset>
         <fieldset>
           <legend>Employment information</legend>
-          <p>Are you currently employed?</p>
+          <p><abbr title="required">*</abbr>Are you currently employed?</p>
           <div class="input-line" data-type="radio">
             <div>
               <input type="radio" name="vol-employed" id="vol-employed-no" value="no" />
@@ -658,7 +686,7 @@
         <fieldset>
           <legend>Availability</legend>
           <div class="input-line" data-type="text">
-            <label for="vol-nr-days">Number of days per week:</label>
+            <label for="vol-nr-days"><abbr title="required">*</abbr>Number of days per week:</label>
             <select name="nr-days" id="vol-nr-days">
               <option value=""></option>
               <option value="1">1</option>
@@ -669,11 +697,11 @@
             </select>
           </div>
           <div class="input-line" data-type="text">
-            <label for="vol-per-week">Hours per week:</label>
+            <label for="vol-per-week"><abbr title="required">*</abbr>Hours per week:</label>
             <input type="text" name="per-week" id="vol-per-week" />
           </div>
           <fieldset>
-            <legend>Preferred days</legend>
+            <legend><abbr title="required">*</abbr>Preferred days</legend>
             <div class="input-line" data-type="checkbox">
               <div>
                 <input type="checkbox" name="mon" id="vol-pref-mon" value="Monday"/>
@@ -708,7 +736,7 @@
         </fieldset>
         <fieldset>
           <legend>Programs of interest</legend>
-          <p>Please select all that apply:</p>
+          <p><abbr title="required">*</abbr>Please select all that apply:</p>
           <div class="input-line" data-type="checkbox">
             <div>
               <input type="checkbox" name="prog-one" id="vol-prog-one" value="One day events"/>
@@ -764,13 +792,13 @@
             </select>
           </div>
           <div class="input-line" data-type="text">
-            <label for="vol-how">How did you hear about us?</label>
+            <label for="vol-how"><abbr title="required">*</abbr>How did you hear about us?</label>
             <textarea name="how" id="vol-how"></textarea>
           </div>
         </fieldset>
         <!-- agreements -->
         <fieldset>
-          <legend class="agreement">Participant Photo Release Agreement</legend>
+          <legend class="agreement"><abbr title="required">*</abbr>Participant Photo Release Agreement</legend>
           <div class="collapse">
             <p>A major objective of Society for the Blind is to educate the public about blindness. To accomplish this, Society for the Blind may use photographs, videotape and digital recordings for any and all media. It is the right of the individual whether or not to consent to the use of his/her likeness and/or identity for the purpose of education and/or publicity.</p>
             <ul>
@@ -791,10 +819,7 @@
           </div>
         </fieldset>
         <fieldset>
-          <legend class="agreement">
-            <span>Confidentiality Agreement</span>
-            <!-- <strong>Required</strong> -->
-          </legend>
+          <legend class="agreement"><abbr title="required">*</abbr>Confidentiality Agreement</legend>
           <div class="collapse">
             <p>It is the policy of Society for the Blind that all staff and volunteers maintain the highest standards of confidentiality possible. In order to foster the confidence of our clients regarding the security and privacy of all information contained in their personal records that may be handled or read, it is essential that all personal records are secure from unauthorized use. Protected information includes, but is not limited to: the personal chart mail or correspondence billing and account information and other identifiable client information such as demographic information.</p>
             <p>It is your responsibility as an employee or volunteer at Society for the Blind to never discuss a client with a third party, to never reveal any client information to unauthorized individuals, nor allow an unauthorized person access to any personal chart or computer system that contains client information. In addition, disclosures to authorized persons must be limited to the minimum amount of information necessary to complete the task. That is, information should never be shared unless there is a legitimate need to know the information, even among other staff with whom you work. While it may be necessary to have a conversation about a client with a fellow employee, these conversations must be out of range of other clients or visitors, must not include other staff unnecessarily, and you must not discuss clients during off-duty hours.</p>
@@ -815,10 +840,7 @@
           </div>
         </fieldset>
         <fieldset>
-          <legend class="agreement">
-            <span>Volunteer Waiver, Release and Indemnity Agreement</span>
-            <!-- <strong>Required</strong> -->
-          </legend>
+          <legend class="agreement"><abbr title="required">*</abbr>Volunteer Waiver, Release and Indemnity Agreement</legend>
           <div class="collapse">
             <p>This document sets forth the responsibilities and understandings of the volunteer and of Society for the Blind regarding volunteer’s participation in volunteer programs partially or wholly coordinated by Society for the Blind.</p>
             <p>The volunteer and Society for the Blind agree as follows:</p>
