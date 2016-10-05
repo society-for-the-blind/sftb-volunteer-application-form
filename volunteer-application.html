@@ -165,10 +165,11 @@
       // this function could've been skipped using Element.closest() but
       // but guess which browser does not support it (hint: IE)
       function findParent(el,classOrTagName) {
+        var elp = el.parentElement;
         // in case there is no element with such parent
-        if (!el) { return el};
-        if (el.classList.contains(classOrTagName)) {
-          return el;
+        if (!elp) { return undefined};
+        if (elp.classList.contains(classOrTagName) || (elp.tagName === classOrTagName)) {
+          return elp;
         } else {
           return findParent(el.parentElement,classOrTagName);
         }
@@ -307,24 +308,22 @@
                     if (!i.value) { i.parentElement.classList.add('empty') }
                   })
                 } else {
-                  il.classList.add('full-empty');
+                  // il.classList.add('full-empty');
+                  if (il.classList.contains('not-required')) {
+                    il.parentElement.classList.add('hide');
+                    if (il.classList.contains('first-load')) {
+                      il.parentElement.classList.remove('hide');
+                      il.classList.remove('first-load');
+                      var rootFieldset = findParent(il.parentElement,'FIELDSET');
+                      rootFieldset.classList.add('first-load');
+                    }
+                  } else {
+                    // il.classList.remove('full-empty');
+                    il.classList.add('empty');
+                  }
                 }
               }
               break;
-          }
-
-          // If not 'not-required' inputs are empty, they shouldn't even appear
-          // on the rendered form. Otherwise they will be process by the switch
-          // above anyway.
-          // The whole thing gets messy because of 'multi' inputs,
-          // but it works.
-          if (il.classList.contains('full-empty')) {
-            if (il.classList.contains('not-required')) {
-              il.parentElement.classList.add('hide');
-            } else {
-              il.classList.remove('full-empty');
-              il.classList.add('empty');
-            }
           }
         }
 
@@ -336,7 +335,13 @@
           Array.prototype.slice.
             call(inputLines).
             forEach(processInputLine)
-          if (f.getElementsByClassName('empty').length === 0) { f.classList.add('hide')}
+          if (f.getElementsByClassName('empty').length === 0) {
+            f.classList.add('hide')
+            if (f.classList.contains('first-load')) {
+              f.classList.remove('first-load');
+              f.classList.remove('hide');
+            }
+          }
         }
       }
 
@@ -601,7 +606,7 @@
           </div>
           <fieldset>
             <legend>Skills</legend>
-            <div class="vol-skill-entry input-line not-required" data-type="multi">
+            <div class="vol-skill-entry input-line not-required first-load" data-type="multi">
               <span>
                 <label for="vol-skill-1" class="hide">Skill name</label>
                 <input type="text" name="vol-skill-1" id="vol-skill-1" />
@@ -620,7 +625,7 @@
           </fieldset>
           <fieldset>
             <legend>Languages</legend>
-            <div class="vol-lang-entry input-line not-required" data-type="multi">
+            <div class="vol-lang-entry input-line not-required first-load" data-type="multi">
               <span>
                 <label for="vol-lang-1" class="hide">Skill name</label>
                 <input type="text" name="vol-lang-1" id="vol-lang-1" />
