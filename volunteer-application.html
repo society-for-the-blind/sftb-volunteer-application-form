@@ -7,9 +7,92 @@
     <!-- <script src="https://mrrio.github.io/jsPDF/dist/jspdf.debug.js"></script> -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/4.2.0/normalize.css" integrity="sha256-2LsTD4scfANF6HuZklR+5S4fjt7Bj0QHmybFZux6wtw=" crossorigin="anonymous" />
     <style type="text/css" media="screen">
+      * {
+        -webkit-box-sizing: border-box;
+          -moz-box-sizing: border-box;
+                box-sizing: border-box;
+      }
+
+      h1 {
+          position: absolute;
+          top: 20px;
+          left: 140px;
+
+      }
+
+      .names {
+          display: inline-block;
+      }
+
+      .hide-label label {
+        display: none;
+      }
+
+      #form-frame{
+          position: relative;
+          background: #f1f1f1;
+          padding-left: 60px;
+          padding-top: 100px;
+          max-width: 620px;
+          margin: 20px auto;
+          -moz-border-radius: 10px;
+          -webkit-border-radius: 10px;
+          border-radius: 10px; /* future proofing */
+      }
+
+      form {
+          position: relative;
+          margin: 0;
+          padding: 0;
+          border: 0;
+      }
+
+      form div {
+          display: block;
+      }
+
+      label {
+          display: block;
+          margin: 0 0 3px 0;
+      }
+
+      input[type="radio"] + label {
+          display: inline;
+      }
+
+      input[type="checkbox"] + label {
+          display: inline;
+      }
+
+      legend {
+          font-weight: bold;
+          font-size: 15px;
+          padding: 17px 0 5px 0;
+      }
+
+      form > fieldset > legend {
+          font-size: 22px;
+          margin-top: 10px;
+      }
+
+      fieldset {
+          border: 0;
+          padding: 0;
+          margin: 0;
+      }
+
+      p {
+          margin: 0;
+      }
+
+      fieldset > div {
+          padding: 3px 0 3px 0;
+      }
+
       .hide {
         display: none;
       }
+
       fieldset input[type="radio"]:checked + label + div {
         display: block;
       }
@@ -32,6 +115,49 @@
       .empty textarea,
       .empty select {
         background: #E6CACA
+      }
+
+      li, p {
+          text-align: justify;
+      }
+
+      p, li {
+          line-height: 20px;
+      }
+
+      p {
+          padding-right: 60px;
+          padding-bottom: 7px;
+      }
+
+      .collapse p {
+        padding-bottom: 17px;
+      }
+
+      li {
+          padding-bottom: 10px;
+      }
+
+      ul,ol {
+          padding-left: 15px;
+          padding-right: 80px;
+      }
+
+      .collapse ~ div div, .collapse ~ div {
+          position: relative;
+          clear: both;
+          height: 50px;
+      }
+
+      .collapse ~ div label {
+          float: right;
+          width: 95%;
+          padding-right: 127px;
+          text-align: justify;
+      }
+
+      .collapse ~ div input {
+          float: left;
       }
     </style>
     <!-- on-the-fly quick validation before submit -->
@@ -116,104 +242,109 @@
         input.focus();
       }
     </script>
-    <!-- <script type="text/javascript" charset="utf-8"> -->
-    <!--   function process_form() { -->
-    <!--     function processInputLine(il) { -->
-    <!--       var inputs = getInputsWithLabels(il); -->
+    <script type="text/javascript" charset="utf-8">
+      function process_form() {
+        function processInputLine(il) {
+          var inputs = getInputsWithLabels(il);
 
-    <!--       switch (il.dataset.type) { -->
-    <!--         case 'text': -->
-    <!--           inputs.forEach(function(i) { -->
-    <!--             if (i.value) { -->
-    <!--               //WHAT?! -->
-    <!--             } else { -->
-    <!--               var ilc = il.classList; -->
-    <!--               ilc.add('empty'); -->
-    <!--               if (ilc.contains('not-required')) { -->
-    <!--                 ilc.add('hide'); -->
-    <!--                 ilc.remove('empty'); -->
-    <!--               } -->
-    <!--             } -->
-    <!--           }); -->
-    <!--           break; -->
-    <!--         case 'radio': -->
-    <!--           var radios = il.querySelectorAll('input[type="radio"]'); -->
-    <!--           var checkedRadioIndex = Array.prototype.slice.call(radios). -->
-    <!--                                     findIndex(function(r) {return r.checked}); -->
-    <!--           if (checkedRadioIndex !== -1) { -->
-    <!--             il.classList.remove('empty'); -->
-    <!--             radios.forEach(function(r,i) { -->
-    <!--               if (i === checkedRadioIndex) { -->
-    <!--                 // WHAT?! -->
-    <!--               } else { -->
-    <!--                 var hidden = r.parentElement.querySelector('.hide'); -->
-    <!--                 if (hidden) { -->
-    <!--                   getInputsWithLabels(hidden). -->
-    <!--                     forEach(function(h) { -->
-    <!--                       h.parentElement.classList.remove('empty'); -->
-    <!--                     }) -->
-    <!--                 } -->
-    <!--               } -->
-    <!--             }) -->
-    <!--           } else { -->
-    <!--             il.classList.add('empty') -->
-    <!--           } -->
-    <!--           break; -->
-    <!--         case 'checkbox': -->
-    <!--           var checked = inputs.filter(function(i){return i.checked}); -->
-    <!--           if (checked.length) { -->
-    <!--             //WHAT?! -->
-    <!--           } else { -->
-    <!--             il.classList.add('empty'); -->
-    <!--           } -->
-    <!--           break; -->
-    <!--         case 'multi': // half-empty? it would justify the not-required condition below -->
-    <!--           var nonEmpty = inputs.filter(function(i) {return i.value}); -->
-    <!--           if (nonEmpty.length === inputs.length) { -->
-    <!--             //WHAT?! -->
-    <!--           } else { -->
-    <!--             // there's a twist here: -->
-    <!--             // If nothing is entered, the input-line gets marked as full-empty -->
-    <!--             // so that it is not removed by the not-required checking code below, -->
-    <!--             // otherwise the birthday section is gone at the check. -->
-    <!--             if (nonEmpty.length) { -->
-    <!--               inputs.forEach(function(i) { -->
-    <!--                 if (!i.value) { i.parentElement.classList.add('empty') } -->
-    <!--               }) -->
-    <!--             } else { -->
-    <!--               il.classList.add('full-empty'); -->
-    <!--             } -->
-    <!--           } -->
-    <!--           break; -->
-    <!--       } -->
+          switch (il.dataset.type) {
+            case 'text':
+              inputs.forEach(function(i) {
+                if (i.value) {
+                  //WHAT?!
+                } else {
+                  var ilc = il.classList;
+                  ilc.add('empty');
+                  if (ilc.contains('not-required')) {
+                 //   ilc.add('hide');
+                    ilc.remove('empty');
+                  }
+                }
+              });
+              break;
+            case 'radio':
+              var radios = il.querySelectorAll('input[type="radio"]');
+              var checkedRadioIndex = Array.prototype.slice.call(radios).
+                                        findIndex(function(r) {return r.checked});
+              if (checkedRadioIndex !== -1) {
+                il.classList.remove('empty');
+                radios.forEach(function(r,i) {
+                  if (i === checkedRadioIndex) {
+                    // WHAT?!
+                  } else {
+                    var hidden = r.parentElement.querySelector('.hide');
+                    if (hidden) {
+                      getInputsWithLabels(hidden).
+                        forEach(function(h) {
+                          h.parentElement.classList.remove('empty');
+                        })
+                    }
+                  }
+                })
+              } else {
+                il.classList.add('empty')
+              }
+              break;
+            case 'checkbox':
+              var checked = inputs.filter(function(i){return i.checked});
+              if (checked.length) {
+                //WHAT?!
+              } else {
+                il.classList.add('empty');
+              }
+              break;
+            case 'multi': // half-empty? it would justify the not-required condition below
+              var nonEmpty = inputs.filter(function(i) {return i.value});
+              if (nonEmpty.length === inputs.length) {
+                //WHAT?!
+              } else {
+                // there's a twist here:
+                // If nothing is entered, the input-line gets marked as full-empty
+                // so that it is not removed by the not-required checking code below,
+                // otherwise the birthday section is gone at the check.
+                if (nonEmpty.length) {
+                  inputs.forEach(function(i) {
+                    if (!i.value) { i.parentElement.classList.add('empty') }
+                  })
+                } else {
+                  il.classList.add('full-empty');
+                }
+              }
+              break;
+          }
 
-    <!--       // If not 'not-required' inputs are empty, they shouldn't even appear -->
-    <!--       // on the rendered form. Otherwise they will be process by the switch -->
-    <!--       // above anyway. -->
-    <!--       // The whole thing gets messy because of 'multi' inputs, -->
-    <!--       // but it works. -->
-    <!--       if (il.classList.contains('full-empty')) { -->
-    <!--         if (il.classList.contains('not-required')) { -->
-    <!--           il.parentElement.classList.add('hide'); -->
-    <!--         } else { -->
-    <!--           il.classList.remove('full-empty'); -->
-    <!--           il.classList.add('empty'); -->
-    <!--         } -->
-    <!--       } -->
-    <!--     } -->
+          // If not 'not-required' inputs are empty, they shouldn't even appear
+          // on the rendered form. Otherwise they will be process by the switch
+          // above anyway.
+          // The whole thing gets messy because of 'multi' inputs,
+          // but it works.
+          if (il.classList.contains('full-empty')) {
+            if (il.classList.contains('not-required')) {
+              il.parentElement.classList.add('hide');
+            } else {
+              il.classList.remove('full-empty');
+              il.classList.add('empty');
+            }
+          }
+        }
 
-    <!--     var fieldsets = document.querySelectorAll('form > fieldset'); -->
+        var fieldsets = document.querySelectorAll('form > fieldset');
 
-    <!--     for (let i=0; i<fieldsets.length; i++) { -->
-    <!--       var f = fieldsets[i]; -->
-    <!--       var inputLines = f.getElementsByClassName('input-line'); -->
-    <!--       Array.prototype.slice. -->
-    <!--         call(inputLines). -->
-    <!--         forEach(processInputLine) -->
-    <!--       if (f.getElementsByClassName('empty').length === 0) { f.classList.add('hide')} -->
-    <!--     } -->
-    <!--   } -->
-    <!-- </script> -->
+        for (let i=0; i<fieldsets.length; i++) {
+          var f = fieldsets[i];
+          var inputLines = f.getElementsByClassName('input-line');
+          Array.prototype.slice.
+            call(inputLines).
+            forEach(processInputLine)
+          if (f.getElementsByClassName('empty').length === 0) { f.classList.add('hide')}
+        }
+      }
+
+      window.onload = function() {
+        process_form();
+        document.getElementById('vol-first-name').focus();
+      };
+    </script>
   </head>
   <body>
     <div id="form-frame">
@@ -222,28 +353,41 @@
         <!-- <p><strong>Required fields are followed by <abbr title="required">*</abbr>.</strong></p> -->
         <fieldset>
           <legend>Personal Information</legend>
-          <div class="input-line names" data-type="text">
+          <div class="input-line names hide-label" data-type="text">
             <label for="vol-first-name">
               <span>First Name</span>
               <!-- <strong><abbr title="required">*</abbr></strong> -->
             </label>
             <input type="text" name="first-name" id="vol-first-name" placeholder="First Name"/>
           </div>
-          <div class="input-line names" data-type="text">
+          <div class="input-line names hide-label" data-type="text">
             <label for="vol-last-name">
               <span>Last Name</span>
               <!-- <strong><abbr title="required">*</abbr></strong> -->
             </label>
             <input type="text" name="last-name" id="vol-last-name"  placeholder="Last Name"/>
           </div>
+          <div class="input-line hide-label" data-type="text">
+            <label for="vol-tel">
+              <span>Phone</span>
+              <!-- <strong><abbr title="required">*</abbr></strong> -->
+            </label>
+            <input type="tel" name="phone-number" id="vol-tel" placeholder="Phone number"/>
+          </div>
+          <div class="input-line not-required hide-label" data-type="text">
+            <label for="vol-email">
+              <span>E-mail</span>
+            </label>
+            <input type="email" name="email" id="vol-email" multiple placeholder="E-mail"/>
+          </div>
           <fieldset>
             <legend>
               <span>Date of Birth</span>
               <!-- <strong><abbr title="required">*</abbr></strong> -->
             </legend>
-            <div class="input-line" data-type="multi">
+            <div class="input-line hide-label" data-type="multi">
               <span>
-                <label for="vol-dob-month" class="hide">Month</label>
+                <label for="vol-dob-month">Month</label>
                 <select name="vol-dob-month" class="dob-inputs" id="vol-dob-month">
                   <option value="">Month</option>
                   <option value="January">January</option>
@@ -261,57 +405,44 @@
                 </select>
               </span>
               <span>
-                <label for="vol-dob-day" class="hide">Day</label>
+                <label for="vol-dob-day">Day</label>
                 <input type="text" name="vol-dob-day" class="dob-inputs" id="vol-dob-day" pattern="\d{1}|\d{2}" maxlength="2" size="2" placeholder="Day"/>
               </span>
               <span>
-                <label for="vol-dob-year" class="hide">Year</label>
+                <label for="vol-dob-year">Year</label>
                 <input type="text" name="vol-dob-year" class="dob-inputs" id="vol-dob-year" pattern="\d{4}" maxlength="4" size="4" placeholder="Year"/>
               </span>
             </div>
           </fieldset>
           <fieldset>
             <legend>Address</legend>
-            <div class="input-line" data-type="text">
+            <div class="input-line hide-label" data-type="text">
               <label for="vol-address">
                 <span>Address</span>
                 <!-- <strong><abbr title="required">*</abbr></strong> -->
               </label>
-              <input type="text" name="address" id="vol-address"/>
+              <input type="text" name="address" id="vol-address" placeholder="Address"/>
             </div>
-            <div class="input-line" data-type="text">
+            <div class="input-line hide-label" data-type="text">
               <label for="vol-city">
                 <span>City</span>
                 <!-- <strong><abbr title="required">*</abbr></strong> -->
               </label>
-              <input type="text" name="city" id="vol-city"/>
+              <input type="text" name="city" id="vol-city" placeholder="City"/>
             </div>
-            <div class="input-line" data-type="text">
+            <div class="input-line hide-label" data-type="text">
               <label for="vol-state">
                 <span>State</span>
                 <!-- <strong><abbr title="required">*</abbr></strong> -->
               </label>
-              <input type="text" name="state" id="vol-state"/>
+              <input type="text" name="state" id="vol-state" placeholder="State"/>
             </div>
-            <div class="input-line" data-type="text">
+            <div class="input-line hide-label" data-type="text">
               <label for="vol-zip">
                 <span>ZIP code</span>
                 <!-- <strong><abbr title="required">*</abbr></strong> -->
               </label>
-              <input type="text" name="zip" id="vol-zip" pattern="[0-9](5)" maxlength="5" size="5"/>
-            </div>
-            <div class="input-line" data-type="text">
-              <label for="vol-tel">
-                <span>Phone</span>
-                <!-- <strong><abbr title="required">*</abbr></strong> -->
-              </label>
-              <input type="tel" name="phone-number" id="vol-tel"/>
-            </div>
-            <div class="input-line not-required" data-type="text">
-              <label for="vol-email">
-                <span>E-mail</span>
-              </label>
-              <input type="email" name="email" id="vol-email" multiple />
+              <input type="text" name="zip" id="vol-zip" pattern="[0-9](5)" maxlength="5" size="5" placeholder="ZIP"/>
             </div>
           </fieldset>
           <fieldset>
@@ -353,60 +484,60 @@
         </fieldset>
         <fieldset>
           <legend>Emergency Contact</legend>
-          <div class="input-line names" data-type="text">
+          <div class="input-line names hide-label" data-type="text">
             <label for="vol-emergency-first-name">
               <span>First Name</span>
               <!-- <strong><abbr title="required">*</abbr></strong> -->
             </label>
             <input type="text" name="first-name" id="vol-emergency-first-name" placeholder="First Name"/>
           </div>
-          <div class="input-line names" data-type="text">
+          <div class="input-line names hide-label" data-type="text">
             <label for="vol-emergency-last-name">
               <span>Last Name</span>
               <!-- <strong><abbr title="required">*</abbr></strong> -->
             </label>
             <input type="text" name="last-name" id="vol-emergency-last-name" placeholder="Last Name"/>
           </div>
-          <div class="input-line" data-type="text">
+          <div class="input-line hide-label" data-type="text">
             <label for="vol-emergency-address">
               <span>Address</span>
               <!-- <strong><abbr title="required">*</abbr></strong> -->
             </label>
-            <input type="text" name="address" id="vol-emergency-address"/>
+            <input type="text" name="address" id="vol-emergency-address" placeholder="Address"/>
           </div>
-          <div class="input-line" data-type="text">
+          <div class="input-line hide-label" data-type="text">
             <label for="vol-emergency-city">
               <span>City</span>
               <!-- <strong><abbr title="required">*</abbr></strong> -->
             </label>
-            <input type="text" name="city" id="vol-emergency-city"/>
+            <input type="text" name="city" id="vol-emergency-city" placeholder="City"/>
           </div>
-          <div class="input-line" data-type="text">
+          <div class="input-line hide-label" data-type="text">
             <label for="vol-emergency-state">
               <span>State</span>
               <!-- <strong><abbr title="required">*</abbr></strong> -->
             </label>
-            <input type="text" name="state" id="vol-emergency-state"/>
+            <input type="text" name="state" id="vol-emergency-state" placeholder="State"/>
           </div>
-          <div class="input-line" data-type="text">
+          <div class="input-line hide-label" data-type="text">
             <label for="vol-emergency-zip">
               <span>ZIP code</span>
               <!-- <strong><abbr title="required">*</abbr></strong> -->
             </label>
-            <input type="text" name="zip" id="vol-emergency-zip" pattern="[0-9](5)" maxlength="5" size="5"/>
+            <input type="text" name="zip" id="vol-emergency-zip" pattern="[0-9](5)" maxlength="5" size="5" placeholder="ZIP"/>
           </div>
-          <div class="input-line" data-type="text">
+          <div class="input-line hide-label" data-type="text">
             <label for="vol-emergency-tel">
               <span>Phone</span>
               <!-- <strong><abbr title="required">*</abbr></strong> -->
             </label>
-            <input type="tel" name="phone-number" id="vol-emergency-tel"/>
+            <input type="tel" name="phone-number" id="vol-emergency-tel" placeholder="Phone number"/>
           </div>
-          <div class="input-line not-required" data-type="text">
+          <div class="input-line not-required hide-label" data-type="text">
             <label for="vol-emergency-email">
               <span>E-mail</span>
             </label>
-            <input type="email" name="email" id="vol-emergency-email" multiple />
+            <input type="email" name="email" id="vol-emergency-email" multiple placeholder="E-mail"/>
           </div>
         </fieldset>
         <fieldset>
@@ -463,7 +594,7 @@
           </div>
         </fieldset>
         <fieldset> <!-- because none of the inputs are required -->
-          <legend>Skills and previous volunteer experience</legend>
+          <legend>Skills and volunteer experience</legend>
           <div class="input-line not-required" data-type="text">
             <label for="vol-experience">List previous volunteer experience(s)</label>
             <textarea name="experience" id="vol-experience"></textarea>
