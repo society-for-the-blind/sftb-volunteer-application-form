@@ -72,16 +72,18 @@
 
       form > fieldset > legend {
           font-size: 22px;
-          margin-top: 10px;
+          padding-top: 27px;
+          padding-bottom: 13px;
+          padding-right: 60px;
+      }
+
+      .agreement {
+        text-align: center;
       }
 
       fieldset {
           border: 0;
           padding: 0;
-          margin: 0;
-      }
-
-      p {
           margin: 0;
       }
 
@@ -119,13 +121,11 @@
 
       li, p {
           text-align: justify;
-      }
-
-      p, li {
           line-height: 20px;
       }
 
       p {
+          margin: 0;
           padding-right: 60px;
           padding-bottom: 7px;
       }
@@ -753,7 +753,7 @@
         </fieldset>
         <!-- agreements -->
         <fieldset>
-          <legend>Participant Photo Release Agreement</legend>
+          <legend class="agreement">Participant Photo Release Agreement</legend>
           <div class="collapse">
             <p>A major objective of Society for the Blind is to educate the public about blindness. To accomplish this, Society for the Blind may use photographs, videotape and digital recordings for any and all media. It is the right of the individual whether or not to consent to the use of his/her likeness and/or identity for the purpose of education and/or publicity.</p>
             <ul>
@@ -774,7 +774,7 @@
           </div>
         </fieldset>
         <fieldset>
-          <legend>
+          <legend class="agreement">
             <span>Confidentiality Agreement</span>
             <!-- <strong>Required</strong> -->
           </legend>
@@ -798,7 +798,7 @@
           </div>
         </fieldset>
         <fieldset>
-          <legend>
+          <legend class="agreement">
             <span>Volunteer Waiver, Release and Indemnity Agreement</span>
             <!-- <strong>Required</strong> -->
           </legend>
@@ -838,7 +838,7 @@
           Date
           Parent or Guardian Signature
         </div>
-        <input type="button" id="submitButton" value="submit" onclick="process_form()" />
+        <input type="button" id="submitButton" value="Submit" onclick="process_form()" />
       </form>
     </div>
   </body>
